@@ -73,10 +73,11 @@ function walkdir(path,options,cb){
       }
 
 
-      //if i have evented this inode already dont again.
+      //if i have evented this inode already only report again if it is a hard
+      //link.
       var fileName = _path.basename(path);
       var fileKey = stat.dev + '-' + stat.ino + '-' + fileName;
-      if(inos[fileKey] && stat.ino) return;
+      if(inos[fileKey] && stat.ino && (stat.nlink === 1)) return;
       inos[fileKey] = 1;
 
       if (first && stat.isDirectory()) {
