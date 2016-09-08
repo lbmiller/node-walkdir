@@ -76,7 +76,12 @@ function walkdir(path,options,cb){
       //if i have evented this inode already dont again.
       var fileName = _path.basename(path);
       var fileKey = stat.dev + '-' + stat.ino + '-' + fileName;
-      if(inos[fileKey] && stat.ino) return;
+      //however if the caller wants to report all hard links at the expense of
+      //maybe overreporting symlinks...
+      var inoMatch = inos[fileKey] && stat.ino;
+      var reportAnyway = options.report_hard_links && (stat.nlink > 1);
+      if (inoMatch && !reportAnyway) return;
+
       inos[fileKey] = 1;
 
       if (first && stat.isDirectory()) {

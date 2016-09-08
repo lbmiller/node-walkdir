@@ -1,12 +1,9 @@
 var test = require('tape'),
 walkdir = require('../walkdir.js');
 
-
-test('follow symlinks',function(t){
-
+function runtest(t, opts) {
   var links = [],paths = [],failures = [],errors = [];
-
-  var emitter = walkdir(__dirname+'/dir/symlinks/dir2',{follow_symlinks:true});
+  var emitter = walkdir(__dirname+'/dir/symlinks/dir2', opts);
 
   emitter.on('path',function(path,stat){
     paths.push(path);
@@ -34,4 +31,12 @@ test('follow symlinks',function(t){
     t.end();
 
   });
+};
+
+test('follow symlinks',function(t){
+  runtest(t, {follow_symlinks:true});
+});
+
+test('follow symlink, report hard links',function(t){
+  runtest(t, {follow_symlinks:true, report_hard_links:true});
 });
